@@ -77,17 +77,28 @@ public class SolveProblem {
     }
 
     private static void printFails(String[] args) {
-        if (Arrays.stream(args).anyMatch(s -> s.equals("-f") || s.equals("--fails"))) {
-            printTenShortestFails();
+        boolean failsEnabled = false;
+        int length = 10;
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equals("-f") || args[i].equals("--fails")) {
+                failsEnabled = true;
+                try {
+                    length = Integer.parseInt(args[i + 1]);
+                } catch (NumberFormatException ignored) {}
+                break;
+            }
+        }
+        if (failsEnabled) {
+            printShortestFails(length);
         }
     }
 
-    private static void printTenShortestFails() {
+    private static void printShortestFails(int length) {
         Comparator<String> compByLength = (aName, bName) -> aName.length() - bName.length();
         System.out.println("Shortest Invalid Solutions:");
         invalidCombinations.stream()
                 .sorted(compByLength)
-                .limit(10)
+                .limit(length)
                 .sorted(String::compareTo)
                 .forEach(s -> System.out.println("\t-\t" + incrementCombination(s)));
     }
