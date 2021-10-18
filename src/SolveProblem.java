@@ -11,7 +11,7 @@ public class SolveProblem {
     public static void main(String[] args) {
         List<Wortpaar> paare = parseWortpaare(args);
         printParsedWortpaare(paare);
-        solvePCP(paare);
+        solvePCP(paare, args);
         printFails(args);
         printSolutions(paare);
     }
@@ -29,12 +29,22 @@ public class SolveProblem {
         paare.forEach(p -> System.out.println("\t-\t" + p));
     }
 
-    private static void solvePCP(List<Wortpaar> paare) {
-        solvePCP("", paare);
+    private static void solvePCP(List<Wortpaar> paare, String[] args) {
+        int maximalLength = 20;
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equals("-l") || args[i].equals("--length")) {
+                try {
+                    maximalLength = Integer.parseInt(args[i + 1]);
+                } catch (NumberFormatException ignored) {}
+                break;
+            }
+        }
+
+        solvePCP("", paare, maximalLength);
     }
 
-    private static void solvePCP(String currentCombinationIndexes, List<Wortpaar> paare) {
-        if (currentCombinationIndexes.length() > 20) {
+    private static void solvePCP(String currentCombinationIndexes, List<Wortpaar> paare, int maximalLength) {
+        if (currentCombinationIndexes.length() + 1 > maximalLength) {
             return;
         }
         for (int i = 0; i < paare.size(); i++) {
@@ -47,7 +57,7 @@ public class SolveProblem {
             } else if (isInvalid(newUpper, newLower)) {
                 invalidCombinations.add(currentCombinationIndexes + i);
             } else {
-                solvePCP(currentCombinationIndexes + i, paare);
+                solvePCP(currentCombinationIndexes + i, paare, maximalLength);
             }
         }
     }
@@ -94,7 +104,7 @@ public class SolveProblem {
     }
 
     private static void printShortestFails(int length) {
-        Comparator<String> compByLength = (aName, bName) -> aName.length() - bName.length();
+        Comparator<String> compByLength = Comparator.comparingInt(String::length);
         System.out.println("Shortest Invalid Solutions:");
         invalidCombinations.stream()
                 .sorted(compByLength)
@@ -111,7 +121,11 @@ public class SolveProblem {
     }
 
     private static void printSolutions(List<Wortpaar> paare) {
-        System.out.println("Found Valid Solutions:");
+        if (!validCombinations.isEmpty()) {
+            System.out.println("Found Valid Solutions:");
+        } else {
+            System.out.println("No valid combinations found");
+        }
         for (String solution : validCombinations) {
             printSingleSolution(solution, paare);
         }

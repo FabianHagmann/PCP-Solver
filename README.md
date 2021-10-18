@@ -14,4 +14,10 @@ __(<Upper_Argument>,<Lower_Argument>)__
    By default the 10 shortest invalid solutions will be printed. 
    
    If the flag is followed by a number, the n shortest solutions will be printed.
-3. All found valid solutions will be printed to the command line
+3. With the option "-l" or "--length" the maximal length up to which solution will be searched can be 
+   configured.
+   
+   By default solutions up to a length of 20 will be searched.
+   
+   If the flag is followed by a number, solutions up to a length of n will be searched
+4. All found valid solutions will be printed to the command line

@@ -1,6 +1,6 @@
 public class Wortpaar {
-    private String upper;
-    private String lower;
+    private final String upper;
+    private final String lower;
 
     public Wortpaar(String upper, String lower) {
         this.upper = upper;
